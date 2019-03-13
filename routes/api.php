@@ -18,6 +18,5 @@ use Illuminate\Http\Request;
 //});
 
 Route::middleware('auth:api')->group(function () {
-    Route::get('hola', 'UserController@index');
-    Route::get('inicio', 'CategoryController@index');
+    //
 });

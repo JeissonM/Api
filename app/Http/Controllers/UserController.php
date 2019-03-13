@@ -12,7 +12,7 @@ class UserController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        return response()->json(['mensaje' => 'saludando desde el servidor'], 200);
+        //
     }
 
     /**
