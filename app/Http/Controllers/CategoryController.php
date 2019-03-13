@@ -13,7 +13,13 @@ class CategoryController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        //
+        $categories = Category::all();
+        if (count($categories) > 0) {
+            return response()->json(['data' => $categories, 'mensaje' => 'Datos encontrados'], 200);
+        } else {
+            return response()->json(['data' => 'null', 'mensaje' => 'Datos no encontrados'], 200);
+        }
+        return response()->json(['data' => 'null', 'mensaje' => 'Error inesperado'], 500);
     }
 
     /**
