@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\User;
 
 class UserController extends Controller {
 
@@ -27,7 +28,7 @@ class UserController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create() {
-        //
+        //not implemented
     }
 
     /**
@@ -37,7 +38,8 @@ class UserController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        //
+        $user = new User($request->all());
+        dd($request->all());
     }
 
     /**
