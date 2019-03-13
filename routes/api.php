@@ -19,4 +19,6 @@ use Illuminate\Http\Request;
 
 Route::middleware('auth:api')->group(function () {
     Route::apiResource('categories', 'CategoryController');
+    Route::apiResource('services', 'ServiceController');
+    Route::apiResource('users', 'UserController');
 });
