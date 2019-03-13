@@ -61,12 +61,12 @@ use RegistersUsers;
      */
     protected function create(array $data) {
         return User::create([
-                    'identificacion' => '1065633143',
-                    'nombres' => 'JORGE JEISSON',
-                    'apellidos' => 'MANDON ARENGAS',
+                    'identificacion' => '1065660262',
+                    'nombres' => 'JORDAN JHONSSON',
+                    'apellidos' => 'CUADRO NEGRETTE',
                     'email' => $data['email'],
                     'password' => Hash::make($data['password']),
-                    'user_change' => '1065633143',
+                    'user_change' => '1065660262',
                     'api_token' => Str::random(60),
         ]);
     }

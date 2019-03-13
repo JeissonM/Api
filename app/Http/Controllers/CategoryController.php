@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Service;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller {
 
@@ -35,10 +39,18 @@ class CategoryController extends Controller {
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @params {nombre}
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        //
+        $category = new Category($request->all());
+        $category->user_change = $this->getApitokenAuthenticated($request->api_token)->identificacion;
+        if ($category->save()) {
+            return response()->json(['data' => 'null', 'mensaje' => 'Datos guardados'], 200);
+        } else {
+            return response()->json(['data' => 'null', 'mensaje' => 'Datos no guardados'], 200);
+        }
+        return response()->json(['data' => 'null', 'mensaje' => 'Error Inesperado'], 500);
     }
 
     /**
@@ -48,7 +60,12 @@ class CategoryController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show(Category $category) {
-        //
+        if (!$category) {
+            return response()->json(['data' => 'null', 'mensaje' => 'Datos no encontrados'], 200);
+        } else {
+            return response()->json(['data' => $category, 'mensaje' => 'Datos encontrados'], 200);
+        }
+        return response()->json(['data' => 'null', 'mensaje' => 'Error Inesperado'], 500);
     }
 
     /**
@@ -58,7 +75,7 @@ class CategoryController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function edit(Category $category) {
-        //
+        //not implemented
     }
 
     /**
@@ -66,10 +83,26 @@ class CategoryController extends Controller {
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Category  $category
+     * @params {nombre}
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Category $category) {
-        //
+        if (!$category) {
+            return response()->json(['data' => 'null', 'mensaje' => 'Recurso no encontrado, datos no actualizados'], 200);
+        } else {
+            foreach ($category->attributesToArray() as $key => $value) {
+                if (isset($request->$key)) {
+                    $category->$key = $request->$key;
+                }
+            }
+            $category->user_change = $this->getApitokenAuthenticated($request->api_token)->identificacion;
+            if ($category->save()) {
+                return response()->json(['data' => 'null', 'mensaje' => 'Datos actualizados'], 200);
+            } else {
+                return response()->json(['data' => 'null', 'mensaje' => 'Datos no actualizados'], 200);
+            }
+        }
+        return response()->json(['data' => 'null', 'mensaje' => 'Error Inesperado'], 500);
     }
 
     /**
@@ -79,7 +112,30 @@ class CategoryController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy(Category $category) {
-        //
+        if (!$category) {
+            return response()->json(['data' => 'null', 'mensaje' => 'Datos no encontrados'], 200);
+        } else {
+            $services = Service::where('categorie_id', $category->id)->get();
+            $empleados = DB::table('category_empleado')->where('category_id', $category->id)->get();
+            if (count($services) > 0 || count($empleados) > 0) {
+                return response()->json(['data' => 'null', 'mensaje' => 'El recurso que quiere eliminar tiene datos asociados, no se puede eliminar'], 200);
+            } else {
+                if ($category->delete()) {
+                    return response()->json(['data' => 'null', 'mensaje' => 'Datos eliminados'], 200);
+                } else {
+                    return response()->json(['data' => 'null', 'mensaje' => 'Datos no eliminados'], 200);
+                }
+            }
+        }
+        return response()->json(['data' => 'null', 'mensaje' => 'Error Inesperado'], 500);
+    }
+
+    /**
+     * get a user authenticeted
+     */
+    public function getApitokenAuthenticated($api_token) {
+        $user = User::where('api_token', $api_token)->first();
+        return $user;
     }
 
 }

@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Service;
+use App\Empleado;
 use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class ServiceController extends Controller {
+class EmpleadoController extends Controller {
 
     /**
      * Display a listing of the resource.
@@ -15,9 +14,12 @@ class ServiceController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        $servicies = Service::all();
-        if (count($servicies) > 0) {
-            return response()->json(['data' => $servicies, 'mensaje' => 'Datos encontrados'], 200);
+        $empleados = Empleado::all();
+        $empleados->each(function($e) {
+            $e->categories;
+        });
+        if (count($empleados) > 0) {
+            return response()->json(['data' => $empleados, 'mensaje' => 'Datos encontrados'], 200);
         } else {
             return response()->json(['data' => 'null', 'mensaje' => 'Datos no encontrados'], 200);
         }
@@ -37,14 +39,14 @@ class ServiceController extends Controller {
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @params {descripcion,precio,ganancia_empleado,categorie_id}
+     * @params {identificacion,nombres,apellidos:null,celular,email,sexo,categories:array}
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        $service = new Service($request->all());
-        $u = $this->getApitokenAuthenticated($request->api_token);
-        $service->user_change = $u->identificacion;
-        if ($service->save()) {
+        $empleado = new Empleado($request->all());
+        $empleado->user_change = $this->getApitokenAuthenticated($request->api_token)->identificacion;
+        if ($empleado->save()) {
+            $empleado->categories()->sync($request->categories);
             return response()->json(['data' => 'null', 'mensaje' => 'Datos guardados'], 200);
         } else {
             return response()->json(['data' => 'null', 'mensaje' => 'Datos no guardados'], 200);
@@ -55,14 +57,15 @@ class ServiceController extends Controller {
     /**
      * Display the specified resource.
      *
-     * @param  \App\Service  $service
+     * @param  \App\Empleado  $empleado
      * @return \Illuminate\Http\Response
      */
-    public function show(Service $service) {
-        if (!$service) {
+    public function show(Empleado $empleado) {
+        if (!$empleado) {
             return response()->json(['data' => 'null', 'mensaje' => 'Datos no encontrados'], 200);
         } else {
-            return response()->json(['data' => $service, 'mensaje' => 'Datos encontrados'], 200);
+            $empleado->categories;
+            return response()->json(['data' => $empleado, 'mensaje' => 'Datos encontrados'], 200);
         }
         return response()->json(['data' => 'null', 'mensaje' => 'Error Inesperado'], 500);
     }
@@ -70,32 +73,32 @@ class ServiceController extends Controller {
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Service  $service
+     * @param  \App\Empleado  $empleado
      * @return \Illuminate\Http\Response
      */
-    public function edit(Service $service) {
-        //not implementd
+    public function edit(Empleado $empleado) {
+        //not implemented
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Service  $service
-     * @params {descripcion,precio,ganancia_empleado,categorie_id}
+     * @param  \App\Empleado  $empleado
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Service $service) {
-        if (!$service) {
+    public function update(Request $request, Empleado $empleado) {
+        if (!$empleado) {
             return response()->json(['data' => 'null', 'mensaje' => 'Recurso no encontrado, datos no actualizados'], 200);
         } else {
-            foreach ($service->attributesToArray() as $key => $value) {
+            foreach ($empleado->attributesToArray() as $key => $value) {
                 if (isset($request->$key)) {
-                    $service->$key = $request->$key;
+                    $empleado->$key = $request->$key;
                 }
             }
-            $service->user_change = $this->getApitokenAuthenticated($request->api_token)->identificacion;
-            if ($service->save()) {
+            $empleado->user_change = $this->getApitokenAuthenticated($request->api_token)->identificacion;
+            if ($empleado->save()) {
+                $empleado->categories()->sync($request->categories);
                 return response()->json(['data' => 'null', 'mensaje' => 'Datos actualizados'], 200);
             } else {
                 return response()->json(['data' => 'null', 'mensaje' => 'Datos no actualizados'], 200);
@@ -107,14 +110,14 @@ class ServiceController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Service  $service
+     * @param  \App\Empleado  $empleado
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Service $service) {
-        if (!$service) {
+    public function destroy(Empleado $empleado) {
+        if (!$empleado) {
             return response()->json(['data' => 'null', 'mensaje' => 'Datos no encontrados'], 200);
         } else {
-            if ($service->delete()) {
+            if ($empleado->delete()) {
                 return response()->json(['data' => 'null', 'mensaje' => 'Datos eliminados'], 200);
             } else {
                 return response()->json(['data' => 'null', 'mensaje' => 'Datos no eliminados'], 200);

@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model {
+class Empleado extends Model {
 
     /**
      * The attributes that are mass assignable.
@@ -12,7 +12,7 @@ class Category extends Model {
      * @var array
      */
     protected $fillable = [
-        'id', 'nombre', 'user_change', 'created_at', 'updated_at'
+        'id', 'identificacion', 'nombres', 'apellidos', 'celular', 'email', 'sexo', 'saldofavor', 'saldocontra', 'turnos', 'created_at', 'updated_at'
     ];
 
     /**
@@ -37,11 +37,7 @@ class Category extends Model {
              */
     ];
 
-    public function services() {
-        return $this->hasMany('App\Service');
-    }
-
-    public function empleados(){
-        return $this->belongsToMany('App\Empleado');
+    public function categories(){
+        return $this->belongsToMany('App\Category');
     }
 }
