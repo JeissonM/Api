@@ -42,5 +42,5 @@ Route::middleware('auth:api')->group(function () {
     Route::post('caja/transacciones/egreso', 'CajaController@egreso');
     //GESTION DE EMPLEADOS
     Route::apiResource('empleados', 'EmpleadoController');
-    Route::apiResources('movimientosempleado', 'MovimientosempleadoController');
+    Route::apiResource('movimientosempleado', 'MovimientosempleadoController');
 });

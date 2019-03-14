@@ -160,7 +160,7 @@ class CajaController extends Controller {
         if (!$oldCaja) {
             return response()->json(['data' => 'null', 'mensaje' => 'El anterior cierre de caja fue erróneo, la caja no puede ser abierta hasta no darle solución: contácte al administrador del sistema.'], 200);
         }
-        
+        //confirmar, validar inconsistencia, agregar dinero,
     }
 
     /**
