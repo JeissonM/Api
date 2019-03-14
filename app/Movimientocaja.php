@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Historialcaja extends Model {
+class Movimientocaja extends Model {
 
     /**
      * The attributes that are mass assignable.
@@ -12,7 +12,7 @@ class Historialcaja extends Model {
      * @var array
      */
     protected $fillable = [
-        'id', 'dineroCaja', 'egresos', 'fechaApertura', 'fechaCierre', 'gananciaLocal', 'inconsistencia', 'ingresos', 'montoInicial', 'montoAgregado', 'montoConfirmado', 'user_change', 'anterior', 'created_at', 'updated_at'
+        'id', 'fecha', 'descripcion', 'monto', 'tipo', 'user_change', 'caja_id', 'created_at', 'updated_at'
     ];
 
     /**
@@ -37,8 +37,8 @@ class Historialcaja extends Model {
              */
     ];
 
-    public function movimientohistorialcajas() {
-        return $this->hasMany('App\Movimientohistorialcaja');
+    public function caja() {
+        return $this->belongsTo('App\Caja');
     }
 
 }

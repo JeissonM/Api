@@ -32,6 +32,12 @@ Route::middleware('auth:api')->group(function () {
     Route::get('users/password/{identificacion}/{newpassword}/change', 'UserController@passwordChange');
     //CAJA
     Route::apiResource('caja', 'CajaController');
+    Route::get('caja/dinero/caja', 'CajaController@getDineroCaja');
+    Route::get('caja/obtener/caja/abierta', 'CajaController@getOpenCaja');
+    Route::get('caja/apertura/primeravez/validar', 'CajaController@validarPrimeraVez');
+    Route::post('caja/apertura/primeravez/abrirPrimeraVez', 'CajaController@abrirPrimeraVez');
+    Route::post('caja/apertura/abrir', 'CajaController@abrirCaja');
+    Route::post('caja/cierre/cerrar', 'CajaController@cerrarCaja');
     //GESTION DE EMPLEADOS
     Route::apiResource('empleados', 'EmpleadoController');
 });
