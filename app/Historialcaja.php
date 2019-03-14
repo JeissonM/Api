@@ -12,7 +12,7 @@ class Historialcaja extends Model {
      * @var array
      */
     protected $fillable = [
-        'id', 'dineroCaja', 'egresos', 'fechaApertura', 'fechaCierre', 'gananciaLocal', 'inconsistencia', 'ingresos', 'montoInicial', 'montoAgregado', 'montoConfirmado', 'user_change', 'anterior', 'created_at', 'updated_at'
+        'id', 'dineroCaja', 'egresos', 'fechaApertura', 'fechaCierre', 'gananciaLocal', 'inconsistencia', 'ingresos', 'montoInicial', 'montoAgregado', 'montoConfirmado', 'user_change', 'anterior', 'dineroGenerado', 'created_at', 'updated_at'
     ];
 
     /**

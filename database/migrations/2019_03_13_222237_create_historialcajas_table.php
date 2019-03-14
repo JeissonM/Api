@@ -26,6 +26,7 @@ class CreateHistorialcajasTable extends Migration {
             $table->double('montoConfirmado')->default(0);
             $table->string('user_change', 50);
             $table->string('anterior', 10)->default('SI');
+            $table->double('dineroGenerado')->default(0);
             $table->text('observaciones')->nullable();
             $table->timestamps();
         });

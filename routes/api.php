@@ -38,6 +38,9 @@ Route::middleware('auth:api')->group(function () {
     Route::post('caja/apertura/primeravez/abrirPrimeraVez', 'CajaController@abrirPrimeraVez');
     Route::post('caja/apertura/abrir', 'CajaController@abrirCaja');
     Route::post('caja/cierre/cerrar', 'CajaController@cerrarCaja');
+    Route::post('caja/transacciones/ingreso', 'CajaController@ingreso');
+    Route::post('caja/transacciones/egreso', 'CajaController@egreso');
     //GESTION DE EMPLEADOS
     Route::apiResource('empleados', 'EmpleadoController');
+    Route::apiResources('movimientosempleado', 'MovimientosempleadoController');
 });
