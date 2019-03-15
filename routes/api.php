@@ -42,7 +42,10 @@ Route::middleware('auth:api')->group(function () {
     Route::post('caja/cierre/cerrar', 'CajaController@cerrarCaja');
     Route::post('caja/transacciones/ingreso', 'CajaController@ingreso');
     Route::post('caja/transacciones/egreso', 'CajaController@egreso');
+    Route::post('caja/historialcaja/transacciones/inconsistencia', 'CajaController@setInconsistencia');
     //GESTION DE EMPLEADOS
     Route::apiResource('empleados', 'EmpleadoController');
     Route::apiResource('movimientosempleado', 'MovimientosempleadoController');
+    //ESTADISTICAS
+    Route::get('estadistica/consulta/numerica/caja', 'EstadisticasController@Datosnumericoscaja');
 });

@@ -160,12 +160,11 @@ class CajaController extends Controller {
         if (!$oldCaja) {
             return response()->json(['data' => 'null', 'mensaje' => 'El anterior cierre de caja fue erróneo, la caja no puede ser abierta hasta no darle solución: contácte al administrador del sistema.'], 200);
         }
-        //confirmar, validar inconsistencia, agregar dinero
         $response = null;
         if ($request->montoConfirmado > $oldCaja->montoInicial) {
             $response = [
                 'inconsistencia' => 'SI',
-                'mensaje' => 'Existe una inconsistencia, en caja debe haber $' . $oldCaja->montoInicial . " y usted indica que hay $" . $request->montoConfirmado . ", hay más dinero del que debería haber, obran $" . $request->montoConfirmado - $oldCaja->montoInicial . ".",
+                'mensaje' => 'Existe una inconsistencia, en caja debe haber $' . $oldCaja->montoInicial . " y usted indica que hay $" . $request->montoConfirmado . ", hay más dinero del que debería haber, sobran $" . ($request->montoConfirmado - $oldCaja->montoInicial) . ".",
                 'proceder' => 'Especifique los detalles de lo ocurrido con la caja en la pantalla indicada para ello, la caja se abrirá de todos modos.',
                 'historialcaja_id' => $oldCaja->id
             ];
@@ -173,12 +172,28 @@ class CajaController extends Controller {
         if ($request->montoConfirmado < $oldCaja->montoInicial) {
             $response = [
                 'inconsistencia' => 'SI',
-                'mensaje' => 'Existe una inconsistencia, en caja debe haber $' . $oldCaja->montoInicial . " y usted indica que hay $" . $request->montoConfirmado . ", falta $" . $request->montoConfirmado - $oldCaja->montoInicial . " en la caja.",
+                'mensaje' => 'Existe una inconsistencia, en caja debe haber $' . $oldCaja->montoInicial . " y usted indica que hay $" . $request->montoConfirmado . ", faltan $" . ($request->montoConfirmado - $oldCaja->montoInicial) . " en la caja.",
                 'proceder' => 'Especifique los detalles de lo ocurrido con la caja en la pantalla indicada para ello, la caja se abrirá de todos modos.',
                 'historialcaja_id' => $oldCaja->id
             ];
         }
-        dd($response);
+        $caja = new Caja();
+        $caja->dineroCaja = $oldCaja->montoInicial + $request->montoAgregado;
+        $caja->dineroGenerado = 0;
+        $caja->egresos = 0;
+        $caja->ingresos = 0;
+        $caja->fechaApertura = $hoy["year"] . "-" . $hoy["mon"] . "-" . $hoy["mday"] . " " . $hoy["hours"] . ":" . $hoy["minutes"] . ":" . $hoy["seconds"];
+        $caja->gananciaLocal = 0;
+        $caja->montoInicial = $oldCaja->montoInicial + $request->montoAgregado;
+        $caja->montoAgregado = $request->montoAgregado;
+        $caja->montoConfirmado = $request->montoConfirmado;
+        $caja->user_change = $this->getApitokenAuthenticated($request->api_token)->identificacion;
+        if ($caja->save()) {
+            return response()->json(['data' => $response, 'mensaje' => 'Caja abierta'], 200);
+        } else {
+            return response()->json(['data' => 'null', 'mensaje' => 'No se pudo abrir la caja'], 200);
+        }
+        return response()->json(['data' => 'null', 'mensaje' => 'Error inesperado'], 500);
     }
 
     /**
@@ -327,6 +342,24 @@ class CajaController extends Controller {
             }
         } else {
             return response()->json(['data' => 'null', 'mensaje' => 'No se pudo registrar el egreso'], 200);
+        }
+        return response()->json(['data' => 'null', 'mensaje' => 'Error inesperado'], 500);
+    }
+
+    /**
+     * especifica la inconsistencia en historial de caja
+     *
+     * @param Request $request {observaciones, api_token, historialcaja_id}
+     * @return \Illuminate\Http\Response
+     */
+    public function setInconsistencia(Request $request) {
+        $h = Historialcaja::find($request->historialcaja_id);
+        $h->inconsistencia = true;
+        $h->observaciones = $request->observaciones;
+        if ($h->save()) {
+            return response()->json(['data' => 'null', 'mensaje' => 'Inconsistencia guardáda con exito'], 200);
+        } else {
+            return response()->json(['data' => 'null', 'mensaje' => 'No se pudo guardar la inconsistencia'], 200);
         }
         return response()->json(['data' => 'null', 'mensaje' => 'Error inesperado'], 500);
     }
