@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Category;
 use App\Service;
 use App\User;
+use App\Empleado;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -126,6 +127,40 @@ class CategoryController extends Controller {
                     return response()->json(['data' => 'null', 'mensaje' => 'Datos no eliminados'], 200);
                 }
             }
+        }
+        return response()->json(['data' => 'null', 'mensaje' => 'Error Inesperado'], 500);
+    }
+
+    /**
+     * get all the services of a specific category
+     * @params {category}
+     */
+    public function getServices($categorie_id) {
+        $services = Service::where('categorie_id', $categorie_id)->get();
+        if (count($services) > 0) {
+            return response()->json(['data' => $services, 'mensaje' => 'Datos encontrados'], 200);
+        } else {
+            return response()->json(['data' => 'null', 'mensaje' => 'Datos no encontrados'], 200);
+        }
+        return response()->json(['data' => 'null', 'mensaje' => 'Error Inesperado'], 500);
+    }
+
+    /**
+     * get all the employees of a specific category
+     * @params {category}
+     */
+    public function getEmpleados($category_id) {
+        $employees = DB::table('category_empleado')->where('category_id', $category_id)->get();
+        if (count($employees) > 0) {
+            $empleados = null;
+            foreach ($employees as $item) {
+                $e = null;
+                $e = Empleado::find($item->empleado_id);
+                $empleados[] = $e;
+            }
+            return response()->json(['data' => $empleados, 'mensaje' => 'Datos encontrados'], 200);
+        } else {
+            return response()->json(['data' => 'null', 'mensaje' => 'Datos no encontrados'], 200);
         }
         return response()->json(['data' => 'null', 'mensaje' => 'Error Inesperado'], 500);
     }
