@@ -24,6 +24,8 @@ Route::get('users/apitoken/get/{dentificacion}', 'UserController@getApitoken');
 Route::middleware('auth:api')->group(function () {
     //GESTION DE CATEGORIAS
     Route::apiResource('categories', 'CategoryController');
+    Route::get('categories/{category}/getservice', 'CategoryController@getServices');
+    Route::get('categories/{category}/get/empleados', 'CategoryController@getEmpleados');
     //GESTION DE SERVICIOS
     Route::apiResource('services', 'ServiceController');
     //GESTION DE USUARIOS

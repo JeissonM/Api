@@ -146,7 +146,7 @@ class CajaController extends Controller {
     /**
      * abrir caja demás veces (no la primera vez)
      *
-     * @param Request $request {dineroCaja, api_token, }
+     * @param Request $request {montoConfirmado, montoAgregado, api_token}
      * @return \Illuminate\Http\Response
      */
     public function abrirCaja(Request $request) {
@@ -160,7 +160,25 @@ class CajaController extends Controller {
         if (!$oldCaja) {
             return response()->json(['data' => 'null', 'mensaje' => 'El anterior cierre de caja fue erróneo, la caja no puede ser abierta hasta no darle solución: contácte al administrador del sistema.'], 200);
         }
-        //confirmar, validar inconsistencia, agregar dinero,
+        //confirmar, validar inconsistencia, agregar dinero
+        $response = null;
+        if ($request->montoConfirmado > $oldCaja->montoInicial) {
+            $response = [
+                'inconsistencia' => 'SI',
+                'mensaje' => 'Existe una inconsistencia, en caja debe haber $' . $oldCaja->montoInicial . " y usted indica que hay $" . $request->montoConfirmado . ", hay más dinero del que debería haber, obran $" . $request->montoConfirmado - $oldCaja->montoInicial . ".",
+                'proceder' => 'Especifique los detalles de lo ocurrido con la caja en la pantalla indicada para ello, la caja se abrirá de todos modos.',
+                'historialcaja_id' => $oldCaja->id
+            ];
+        }
+        if ($request->montoConfirmado < $oldCaja->montoInicial) {
+            $response = [
+                'inconsistencia' => 'SI',
+                'mensaje' => 'Existe una inconsistencia, en caja debe haber $' . $oldCaja->montoInicial . " y usted indica que hay $" . $request->montoConfirmado . ", falta $" . $request->montoConfirmado - $oldCaja->montoInicial . " en la caja.",
+                'proceder' => 'Especifique los detalles de lo ocurrido con la caja en la pantalla indicada para ello, la caja se abrirá de todos modos.',
+                'historialcaja_id' => $oldCaja->id
+            ];
+        }
+        dd($response);
     }
 
     /**
