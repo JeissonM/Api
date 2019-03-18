@@ -48,4 +48,6 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('movimientosempleado', 'MovimientosempleadoController');
     //ESTADISTICAS
     Route::get('estadistica/consulta/numerica/caja', 'EstadisticasController@Datosnumericoscaja');
+    //VENTAS
+    Route::apiResource('venta', 'VentaController');
 });
