@@ -52,7 +52,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('estadistica/consulta/numerica/caja', 'EstadisticasController@Datosnumericoscaja');
     Route::get('estadistica/inicio', 'EstadisticasController@estadisticaInicio');
     //VENTAS
-    Route::apiResource('venta', 'VentaController');
+    Route::apiResource('venta', 'VentaController'); 
     Route::get('venta/cancelarturno/{id}', 'VentaController@cancelarTurno');
     Route::get('venta/valoragregado/{id}/{valor}/aumentar', 'VentaController@valorAgregado');
     Route::get('venta/descuento/{detalle_id}/{porcentaje}/aplicar', 'VentaController@descuento');

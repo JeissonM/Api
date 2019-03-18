@@ -19,7 +19,21 @@ class VentaController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        //
+        $turnos = Venta::where('estado', 'PENDIENTE')->get();
+        if (count($turnos) > 0) {
+            foreach ($turnos as $t) {
+                if (count($t->detalles) > 0) {
+                    $t->detalles->each(function($item) {
+                        $item->empleado;
+                        $item->service;
+                    });
+                }
+            }
+            return response()->json(['data' => $turnos, 'mensaje' => 'Datos encontrados'], 200);
+        } else {
+            return response()->json(['data' => 'null', 'mensaje' => 'No hay turnos pendientes'], 200);
+        }
+        return response()->json(['data' => 'null', 'mensaje' => 'Error Inesperado'], 500);
     }
 
     /**
