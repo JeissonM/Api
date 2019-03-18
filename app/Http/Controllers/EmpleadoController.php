@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Empleado;
 use App\User;
 use Illuminate\Http\Request;
+Use App\Venta;
+use App\Detalle;
 
 class EmpleadoController extends Controller {
 
@@ -132,6 +134,97 @@ class EmpleadoController extends Controller {
     public function getApitokenAuthenticated($api_token) {
         $user = User::where('api_token', $api_token)->first();
         return $user;
+    }
+
+    /**
+     * Display a listing of the resource.
+     * @return \Illuminate\Http\Response
+     */
+    public function liquidacion() {
+        $empleados = Empleado::all();
+        if ($empleados != null) {
+            $hoy = getdate();
+            $fecha = $hoy["year"] . "-" . $hoy["mon"] . "-" . $hoy["mday"];
+            $ventas = Venta::where([['created_at', $fecha], ['estado', 'PAGADO']])->get();
+            $data = null;
+            foreach ($empleados as $item) {
+                $e = null;
+                $ventashoy = 0;
+                $monto = 0;
+                $ganancia = $item->saldofavor;
+                foreach ($ventas as $ve) {
+                    $det = Detalle::where('venta_id', $ve->id)->get();
+                    $m = Detalle::where([['empleado_id', $item->id], ['venta_id', $ve->id]])->sum('valorServicio');
+                    $monto = $monto + $m;
+                    foreach ($det as $d) {
+                        if ($d->empleado_id == $item->id) {
+                            $ventashoy = $ventashoy + 1;
+                            break;
+                        }
+                    }
+                }
+                $e["ventas"] = $ventashoy;
+                $e["monto"] = $monto;
+                $e["ganancia"] = $ganancia;
+                $e["empleado_id"] = $item->id;
+                $e["empleado"] = $item->nombres . " " . $item->apellidos;
+                $data[$item->id] = $e;
+            }
+            if ($data != null) {
+                return response()->json(['data' => $data, 'mensaje' => 'Datos encontrados'], 200);
+            } else {
+                return response()->json(['data' => 'null', 'mensaje' => 'Datos no encontrados'], 200);
+            }
+        } else {
+            return response()->json(['data' => 'null', 'mensaje' => 'Datos no encontrados'], 200);
+        }
+        return response()->json(['data' => 'null', 'mensaje' => 'Error Inesperado'], 500);
+    }
+
+    /**
+     * get a employees
+     * @params {string} 
+     */
+    public function buscar(string $cadena) {
+        $empleados = Empleado::where('nombres', 'like', '%' . $cadena . '%')
+                        ->orWhere('apellidos', 'like', '%' . $cadena . '%')->get();
+        if (count($empleados) > 0) {
+            $hoy = getdate();
+            $fecha = $hoy["year"] . "-" . $hoy["mon"] . "-" . $hoy["mday"];
+            $ventas = Venta::where([['created_at', $fecha], ['estado', 'PAGADO']])->get();
+            $data = null;
+            foreach ($empleados as $item) {
+                $e = null;
+                $ventashoy = 0;
+                $monto = 0;
+                $ganancia = $item->saldofavor;
+                foreach ($ventas as $ve) {
+                    $det = Detalle::where('venta_id', $ve->id)->get();
+                    $m = Detalle::where([['empleado_id', $item->id], ['venta_id', $ve->id]])->sum('valorServicio');
+                    $monto = $monto + $m;
+                    foreach ($det as $d) {
+                        if ($d->empleado_id == $item->id) {
+                            $ventashoy = $ventashoy + 1;
+                            break;
+                        }
+                    }
+                }
+                $e["ventas"] = $ventashoy;
+                $e["monto"] = $monto;
+                $e["ganancia"] = $ganancia;
+                $e["empleado_id"] = $item->id;
+                $e["empleado"] = $item->nombres . " " . $item->apellidos;
+                $data[$item->id] = $e;
+            }
+            if ($data != null) {
+                return response()->json(['data' => $data, 'mensaje' => 'Datos encontrados'], 200);
+            } else {
+                return response()->json(['data' => 'null', 'mensaje' => 'Datos no encontrados'], 200);
+            }
+        } else {
+            return response()->json(['data' => 'null', 'mensaje' => 'Datos no encontrados'], 200);
+        }
+        return response()->json(['data' => 'null', 'mensaje' => 'Error Inesperado'], 500);
     }
 
 }
