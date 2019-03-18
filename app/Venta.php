@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Empleado extends Model {
+class Venta extends Model {
 
     /**
      * The attributes that are mass assignable.
@@ -12,7 +12,7 @@ class Empleado extends Model {
      * @var array
      */
     protected $fillable = [
-        'id', 'identificacion', 'nombres', 'apellidos', 'celular', 'email', 'sexo', 'saldofavor', 'saldocontra', 'turnos', 'created_at', 'updated_at'
+        'id', 'base', 'descuentoAplicado', 'fecha', 'gananciaNegocio', 'gananciaEmpleado', 'valorAgregado', 'cliente', 'total', 'user_change', 'created_at', 'updated_at'
     ];
 
     /**
@@ -36,14 +36,6 @@ class Empleado extends Model {
              * 
              */
     ];
-
-    public function categories() {
-        return $this->belongsToMany('App\Category');
-    }
-
-    public function movimientostransaccions() {
-        return $this->hasMany('App\Movimientosempleado');
-    }
 
     public function detalles() {
         return $this->hasMany('App\Detalle');
