@@ -17,6 +17,9 @@ class ServiceController extends Controller {
     public function index() {
         $servicies = Service::all();
         if (count($servicies) > 0) {
+            $servicies->each(function($item) {
+                $item->categorie;
+            });
             return response()->json(['data' => $servicies, 'mensaje' => 'Datos encontrados'], 200);
         } else {
             return response()->json(['data' => 'null', 'mensaje' => 'Datos no encontrados'], 200);

@@ -21,7 +21,7 @@ Route::post('users/access/authenticate', 'UserController@authenticate');
 Route::get('users/access/logout', 'UserController@logout');
 Route::get('users/apitoken/get/{dentificacion}', 'UserController@getApitoken');
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware(['auth:api', 'cors'])->group(function () {
     //GESTION DE CATEGORIAS
     Route::apiResource('categories', 'CategoryController');
     Route::get('categories/{category}/getservice', 'CategoryController@getServices');
@@ -51,8 +51,14 @@ Route::middleware('auth:api')->group(function () {
     //ESTADISTICAS
     Route::get('estadistica/consulta/numerica/caja', 'EstadisticasController@Datosnumericoscaja');
     Route::get('estadistica/inicio', 'EstadisticasController@estadisticaInicio');
+    Route::get('estadistica/historico/ventas', 'EstadisticasController@historicoVentas');
+    Route::get('estadistica/{cadena}/buscar/ventas', 'EstadisticasController@buscarHistoricoVenta');
+    Route::get('estadistica/top', 'EstadisticasController@topServicios');
+    Route::get('estadistica/top/categoria', 'EstadisticasController@topCategoria');
+    Route::get('estadistica/top/ventas/empleado', 'EstadisticasController@topEmpleados');
+    Route::get('estadistica/rendimiento/ventas', 'EstadisticasController@rendimiento');
     //VENTAS
-    Route::apiResource('venta', 'VentaController'); 
+    Route::apiResource('venta', 'VentaController');
     Route::get('venta/cancelarturno/{id}', 'VentaController@cancelarTurno');
     Route::get('venta/valoragregado/{id}/{valor}/aumentar', 'VentaController@valorAgregado');
     Route::get('venta/descuento/{detalle_id}/{porcentaje}/aplicar', 'VentaController@descuento');
