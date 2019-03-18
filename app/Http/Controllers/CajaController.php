@@ -301,6 +301,7 @@ class CajaController extends Controller {
         if ($ingreso->save()) {
             $caja = Caja::find($request->caja_id);
             $caja->dineroCaja = $caja->dineroCaja + $request->monto;
+            $caja->ingresos = $caja->ingresos + $request->monto;
             if ($caja->save()) {
                 return response()->json(['data' => 'null', 'mensaje' => 'Ingreso registrado con exito'], 200);
             } else {
@@ -334,6 +335,7 @@ class CajaController extends Controller {
         $ingreso->user_change = $this->getApitokenAuthenticated($request->api_token)->identificacion;
         if ($ingreso->save()) {
             $caja->dineroCaja = $caja->dineroCaja - $request->monto;
+            $caja->egresos = $caja->egresos + $request->monto;
             if ($caja->save()) {
                 return response()->json(['data' => 'null', 'mensaje' => 'Egreso registrado con exito'], 200);
             } else {

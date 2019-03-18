@@ -22,6 +22,7 @@ class CreateVentasTable extends Migration {
             $table->double('valorAgregado')->default(0);
             $table->string('cliente', 150);
             $table->double('total')->default(0);
+            $table->string('estado', 20)->default('PENDIENTE');
             $table->string('user_change', 50);
             $table->timestamps();
         });

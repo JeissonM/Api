@@ -46,8 +46,15 @@ Route::middleware('auth:api')->group(function () {
     //GESTION DE EMPLEADOS
     Route::apiResource('empleados', 'EmpleadoController');
     Route::apiResource('movimientosempleado', 'MovimientosempleadoController');
+    Route::get('empleados/inicio/liquidacion', 'EmpleadoController@liquidacion');
+    Route::get('empleados/inicio/{cadena}/buscar', 'EmpleadoController@buscar');
     //ESTADISTICAS
     Route::get('estadistica/consulta/numerica/caja', 'EstadisticasController@Datosnumericoscaja');
+    Route::get('estadistica/inicio', 'EstadisticasController@estadisticaInicio');
     //VENTAS
     Route::apiResource('venta', 'VentaController');
+    Route::get('venta/cancelarturno/{id}', 'VentaController@cancelarTurno');
+    Route::get('venta/valoragregado/{id}/{valor}/aumentar', 'VentaController@valorAgregado');
+    Route::get('venta/descuento/{detalle_id}/{porcentaje}/aplicar', 'VentaController@descuento');
+    Route::get('venta/pagar/{id}/{api_token}', 'VentaController@pagar');
 });

@@ -12,7 +12,7 @@ class Venta extends Model {
      * @var array
      */
     protected $fillable = [
-        'id', 'base', 'descuentoAplicado', 'fecha', 'gananciaNegocio', 'gananciaEmpleado', 'valorAgregado', 'cliente', 'total', 'user_change', 'created_at', 'updated_at'
+        'id', 'base', 'descuentoAplicado', 'fecha', 'gananciaNegocio', 'gananciaEmpleado', 'valorAgregado', 'cliente', 'total', 'estado', 'user_change', 'created_at', 'updated_at'
     ];
 
     /**
